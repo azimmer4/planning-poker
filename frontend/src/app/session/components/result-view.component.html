@@ -1,0 +1,32 @@
+@let r = result();
+@if (r.votes.length === 0) {
+  <p data-testid="empty" class="muted">Keine Schätzungen abgegeben.</p>
+} @else {
+  @if (consensus()) {
+    <p data-testid="consensus" class="consensus">🎉 Konsens! Alle haben {{ r.groups[0].card }} gewählt.</p>
+  }
+  <ul class="votes">
+    @for (v of r.votes; track v.participantId) {
+      <li data-testid="vote" [class.outlier]="outliers().has(v.participantId)">
+        <span class="poker-card revealed">{{ v.card }}</span>
+        <span>{{ v.name }}</span>
+      </li>
+    }
+  </ul>
+  <h4>Verteilung</h4>
+  <ul class="groups">
+    @for (g of r.groups; track g.card) {
+      <li data-testid="group">
+        <span class="poker-card small">{{ g.card }}</span>
+        <span>{{ g.count }} ×</span>
+      </li>
+    }
+  </ul>
+  <p class="stats">
+    <span data-testid="average">Durchschnitt: {{ average() }}</span>
+    <span data-testid="most-frequent">Häufigster Wert: {{ r.mostFrequent ?? '–' }}</span>
+  </p>
+  @if (outliers().size > 0) {
+    <p class="muted">Rot markiert: Ausreißer (mindestens zwei Karten vom Median entfernt).</p>
+  }
+}

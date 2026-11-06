@@ -1,0 +1,64 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: poker
+      POSTGRES_USER: ${DB_USER:-poker}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-poker}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d poker"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  gitlab-mock:
+    build: ./gitlab-mock
+    restart: unless-stopped
+    environment:
+      MOCK_EXPECTED_TOKEN: ${GITLAB_TOKEN:-fake-token}
+    ports:
+      - "8081:8081"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8081/__test/state"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      gitlab-mock:
+        condition: service_healthy
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/poker
+      DB_USER: ${DB_USER:-poker}
+      DB_PASSWORD: ${DB_PASSWORD:-poker}
+      GITLAB_BASE_URL: ${GITLAB_BASE_URL:-http://gitlab-mock:8081}
+      GITLAB_TOKEN: ${GITLAB_TOKEN:-fake-token}
+      CORS_ORIGINS: http://localhost:4200
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "curl", "-fs", "http://localhost:8080/q/health/ready"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 10s
+
+  frontend:
+    build: ./frontend
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "4200:80"
+
+volumes:
+  db-data:

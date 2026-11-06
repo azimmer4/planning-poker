@@ -1,0 +1,11 @@
+@let i = issue();
+<h2>#{{ i.iid }} {{ i.title }}</h2>
+<p class="description">{{ i.description || 'Keine Beschreibung.' }}</p>
+<p class="meta">
+  @for (label of i.labels; track label) {
+    <span class="badge">{{ label }}</span>
+  }
+  @if (i.webUrl) {
+    <a [href]="i.webUrl" target="_blank" rel="noopener">In GitLab öffnen ↗</a>
+  }
+</p>

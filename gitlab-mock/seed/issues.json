@@ -1,0 +1,14 @@
+{
+  "1": [
+    { "iid": 1, "title": "Login-Seite überarbeiten", "description": "Die Login-Seite soll responsive werden.", "state": "opened", "labels": ["frontend", "SP::3"] },
+    { "iid": 2, "title": "REST-Endpunkt für Benutzerprofil", "description": "GET /users/{id} bereitstellen.", "state": "opened", "labels": ["backend"] },
+    { "iid": 3, "title": "Datenbank-Migration für Rechte", "description": "Neue Tabelle für Rollen und Rechte.", "state": "opened", "labels": ["backend", "db"] },
+    { "iid": 4, "title": "Fehlerseite 404 gestalten", "description": "Freundliche 404-Seite im Corporate Design.", "state": "opened", "labels": ["frontend"] },
+    { "iid": 5, "title": "CI-Pipeline beschleunigen", "description": "Caching für Maven und npm einrichten.", "state": "opened", "labels": ["devops"] },
+    { "iid": 6, "title": "Altes Feature entfernen", "description": "Bereits erledigt.", "state": "closed", "labels": [] }
+  ],
+  "2": [
+    { "iid": 1, "title": "Export als CSV", "description": "Berichte als CSV exportieren.", "state": "opened", "labels": [] },
+    { "iid": 2, "title": "Dark Mode", "description": "Dunkles Farbschema anbieten.", "state": "opened", "labels": ["frontend"] }
+  ]
+}

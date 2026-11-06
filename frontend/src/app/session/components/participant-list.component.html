@@ -1,0 +1,18 @@
+<h3>Teilnehmer</h3>
+@if (voting()) {
+  <p data-testid="progress" class="muted">{{ votedCount() }} von {{ developerCount() }} haben geschätzt</p>
+}
+<ul>
+  @for (p of participants(); track p.id) {
+    <li data-testid="participant" [class.offline]="!p.online">
+      <span class="dot" [title]="p.online ? 'online' : 'offline'"></span>
+      <span class="name">{{ p.name }}@if (p.id === meId()) { (du)}</span>
+      <span class="badge" [class.sm]="p.role === 'SCRUM_MASTER'">
+        {{ p.role === 'SCRUM_MASTER' ? 'Scrum Master' : 'Entwickler' }}
+      </span>
+      @if (voting() && p.role === 'DEVELOPER') {
+        <span class="status" [class.done]="p.hasVoted">{{ p.hasVoted ? 'Hat geschätzt' : 'Ausstehend' }}</span>
+      }
+    </li>
+  }
+</ul>

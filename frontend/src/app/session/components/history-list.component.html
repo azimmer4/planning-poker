@@ -1,0 +1,19 @@
+@if (entries().length > 0) {
+  <h3>Sitzungsprotokoll</h3>
+  <ol>
+    @for (e of entries(); track $index) {
+      <li data-testid="history-entry">
+        <strong>#{{ e.issueIid }} {{ e.issueTitle }}</strong> – Runde {{ e.roundNumber }}
+        <div class="muted">
+          @for (v of e.votes; track $index) {
+            <span>{{ v.name }}: {{ v.card }}</span>@if (!$last) {, }
+          }
+          · Ø {{ average(e) }}
+        </div>
+        @if (e.confirmedCard) {
+          <div class="confirmed">Übernommen: {{ e.confirmedCard }}</div>
+        }
+      </li>
+    }
+  </ol>
+}

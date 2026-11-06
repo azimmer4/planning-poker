@@ -1,0 +1,114 @@
+@if (store.error(); as error) {
+  <p data-testid="error" class="error" role="alert">
+    {{ error }} <button type="button" class="link" (click)="store.clearError()">schließen</button>
+  </p>
+}
+@if (reconnecting()) {
+  <p data-testid="connection" class="notice">Verbindung wird wiederhergestellt …</p>
+}
+
+@switch (store.status()) {
+  @case ('not-found') {
+    <div class="panel">
+      <h2>Sitzung nicht gefunden</h2>
+      <p>Die Sitzung existiert nicht (mehr). <a routerLink="/">Zur Startseite</a></p>
+    </div>
+  }
+  @case ('unauthorized') {
+    <form class="panel join" [formGroup]="joinForm" (ngSubmit)="join()">
+      <h2>Sitzung {{ sessionId }} beitreten</h2>
+      <label>Dein Name
+        <input data-testid="join-name" formControlName="name" maxlength="40" />
+      </label>
+      <button data-testid="join-submit" class="primary" type="submit" [disabled]="joinForm.invalid">Beitreten</button>
+    </form>
+  }
+  @default {
+    @if (store.snapshot(); as s) {
+      <div class="layout">
+        <main>
+          @if (s.issue) {
+            <section class="panel"><app-issue-card [issue]="s.issue" /></section>
+          } @else {
+            <section class="panel muted">
+              {{ store.isScrumMaster() ? 'Kein Issue ausgewählt.' : 'Warte auf Freigabe eines Issues durch den Scrum Master …' }}
+            </section>
+          }
+
+          @if (store.canVote()) {
+            <section class="panel">
+              <h3>Deine Karte (Runde {{ s.roundNumber }})</h3>
+              <app-card-deck data-testid="card-deck" [selected]="s.myVote" (picked)="vote($event)" />
+            </section>
+          } @else if (s.state === 'VOTING') {
+            <section class="panel muted">Runde {{ s.roundNumber }} läuft – Karten sind verdeckt.</section>
+          }
+
+          @if (s.result) {
+            <section class="panel" data-testid="result">
+              <h3>Ergebnis Runde {{ s.roundNumber }}</h3>
+              <app-result-view [result]="s.result" />
+              @if (!store.isScrumMaster() && s.confirmedCard) {
+                <p class="notice">Übernommen: <strong>{{ s.confirmedCard }}</strong></p>
+              }
+            </section>
+          }
+
+          @if (store.isScrumMaster()) {
+            <section class="panel">
+              <app-moderator-controls
+                [state]="s.state"
+                [allVoted]="store.allVoted()"
+                [confirmedCard]="s.confirmedCard"
+                (startRound)="store.startRound()"
+                (reveal)="store.reveal()"
+                (restart)="store.restart()"
+                (confirm)="store.confirm($event)"
+              />
+            </section>
+          }
+
+          @if (s.history.length > 0) {
+            <section class="panel"><app-history-list [entries]="s.history" /></section>
+          }
+        </main>
+
+        <aside>
+          <section class="panel">
+            <app-participant-list [participants]="s.participants" [meId]="s.me.id" [state]="s.state" />
+            @if (!store.isScrumMaster()) {
+              <button type="button" (click)="leave()">Sitzung verlassen</button>
+            }
+          </section>
+          @if (store.isScrumMaster()) {
+            <section class="panel">
+              <h3>Einladen</h3>
+              <p class="muted">Projekt {{ s.projectId }} · Session-ID <code>{{ s.sessionId }}</code></p>
+              <p><code data-testid="join-link">{{ joinLink }}</code></p>
+              <button type="button" data-testid="copy-link" [class.copied]="copyState() === 'copied'" (click)="copyLink()">
+                {{ copyState() === 'copied' ? '✓ Kopiert' : 'Link kopieren' }}
+              </button>
+              <span class="sr-only" aria-live="polite">{{ copyState() === 'copied' ? 'Link in die Zwischenablage kopiert' : '' }}</span>
+              @if (copyState() === 'failed') {
+                <p class="error" data-testid="copy-failed">Kopieren nicht möglich – bitte den Link manuell markieren und kopieren.</p>
+              }
+            </section>
+            <section class="panel">
+              <app-issue-picker
+                data-testid="issue-picker"
+                [issues]="store.issues()"
+                [activeIid]="s.issue?.iid ?? null"
+                [hasMore]="store.hasMoreIssues()"
+                [state]="s.state"
+                (pick)="store.selectIssue($event)"
+                (loadMore)="store.loadMoreIssues()"
+              />
+            </section>
+          }
+        </aside>
+      </div>
+    } @else {
+      <p class="muted">Verbinde …</p>
+    }
+  }
+}

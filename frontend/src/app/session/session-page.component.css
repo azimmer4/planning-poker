@@ -1,0 +1,7 @@
+.layout { display: grid; grid-template-columns: minmax(0, 2fr) minmax(16rem, 1fr); gap: 1.5rem; }
+@media (max-width: 50rem) { .layout { grid-template-columns: 1fr; } }
+main, aside { display: flex; flex-direction: column; gap: 1rem; }
+.join { max-width: 24rem; display: flex; flex-direction: column; gap: .75rem; }
+label { display: flex; flex-direction: column; gap: .25rem; }
+code { word-break: break-all; }
+button.copied { background: #e8f5e9; border-color: #2e7d32; color: #1b5e20; }

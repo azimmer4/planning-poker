@@ -1,0 +1,33 @@
+@if (error()) {
+  <p data-testid="error" class="error" role="alert">{{ error() }}</p>
+}
+<div class="columns">
+  <form class="panel" [formGroup]="createForm" (ngSubmit)="create()">
+    <h2>Neue Sitzung (Scrum Master)</h2>
+    <label>GitLab-Projekt-ID
+      <input data-testid="create-project" formControlName="projectId" placeholder="z. B. 1" />
+    </label>
+    <label>Issue-IID (optional)
+      <input data-testid="create-issue" formControlName="issueIid" type="number" min="1" placeholder="z. B. 2" />
+    </label>
+    <label>Dein Name
+      <input data-testid="create-name" formControlName="name" maxlength="40" />
+    </label>
+    <button data-testid="create-submit" class="primary" type="submit" [disabled]="createForm.invalid || busy()">
+      Sitzung erstellen
+    </button>
+  </form>
+
+  <form class="panel" [formGroup]="joinForm" (ngSubmit)="join()">
+    <h2>Sitzung beitreten (Entwickler)</h2>
+    <label>Session-ID oder Link
+      <input data-testid="join-session" formControlName="session" />
+    </label>
+    <label>Dein Name
+      <input data-testid="join-name" formControlName="name" maxlength="40" />
+    </label>
+    <button data-testid="join-submit" class="primary" type="submit" [disabled]="joinForm.invalid || busy()">
+      Beitreten
+    </button>
+  </form>
+</div>

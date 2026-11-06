@@ -1,0 +1,7 @@
+ul { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: .75rem; }
+.votes li { display: flex; flex-direction: column; align-items: center; gap: .25rem; }
+.groups li { display: flex; align-items: center; gap: .35rem; }
+.outlier .poker-card { border-color: #c62828; background: #ffebee; }
+.stats { display: flex; gap: 1.5rem; }
+.consensus { font-weight: bold; color: #2e7d32; animation: pop .6s ease-out; }
+@keyframes pop { from { transform: scale(.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }

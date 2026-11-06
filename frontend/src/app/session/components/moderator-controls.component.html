@@ -1,0 +1,23 @@
+@switch (state()) {
+  @case ('NO_ISSUE') {
+    <p class="muted">Wähle ein Issue aus der Liste.</p>
+  }
+  @case ('ISSUE_SELECTED') {
+    <button type="button" class="primary" (click)="startRound.emit()">Issue freigeben</button>
+  }
+  @case ('VOTING') {
+    @if (allVoted()) {
+      <p data-testid="all-voted" class="notice">✅ Alle haben geschätzt – du kannst aufdecken.</p>
+    }
+    <button type="button" class="primary" (click)="reveal.emit()">Aufdecken</button>
+  }
+  @case ('REVEALED') {
+    <button type="button" (click)="restart.emit()">Neue Runde</button>
+    <h4>Ergebnis wählen</h4>
+    <app-card-deck data-testid="confirm-deck" [selected]="chosen()" (picked)="chosen.set($event)" />
+    <button type="button" class="primary" [disabled]="chosen() === null" (click)="confirmChosen()">In GitLab übernehmen</button>
+  }
+  @case ('CONFIRMED') {
+    <p class="notice">Ergebnis <strong>{{ confirmedCard() }}</strong> in GitLab übernommen. Wähle das nächste Issue.</p>
+  }
+}

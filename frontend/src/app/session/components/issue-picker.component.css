@@ -1,0 +1,9 @@
+ul { list-style: none; padding: 0; margin: 0 0 .5rem; max-height: 22rem; overflow: auto; }
+li button { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: .5rem;
+  text-align: left; background: none; border: 1px solid transparent; color: inherit; }
+li button:not(:disabled):hover { background: #f1f5f9; border-color: var(--border); }
+/* The active issue is not clickable but must stay fully readable (overrides the global disabled look) */
+li.active button:disabled { opacity: 1; cursor: default; color: #0d3c78; background: #e3f2fd;
+  border-color: var(--primary); border-left-width: 4px; font-weight: 600; }
+.active-badge { flex: none; font-size: .75rem; font-weight: 600; color: #fff; background: var(--primary);
+  border-radius: 999px; padding: .1rem .5rem; }

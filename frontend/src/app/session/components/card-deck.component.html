@@ -1,0 +1,14 @@
+<div class="deck">
+  @for (card of cards(); track card) {
+    <button
+      type="button"
+      class="poker-card"
+      [class.selected]="card === selected()"
+      [attr.aria-pressed]="card === selected()"
+      [disabled]="disabled()"
+      (click)="picked.emit(card)"
+    >
+      {{ card }}
+    </button>
+  }
+</div>

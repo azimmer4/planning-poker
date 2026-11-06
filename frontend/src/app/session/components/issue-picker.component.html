@@ -1,0 +1,21 @@
+<h3>Issues aus GitLab</h3>
+@if (state() === 'VOTING') {
+  <p data-testid="switch-warning" class="muted">Ein Wechsel während der Schätzung: bisherige Karten werden verworfen.</p>
+}
+<ul>
+  @for (issue of issues(); track issue.iid) {
+    <li data-testid="issue-option" [class.active]="issue.iid === activeIid()">
+      <button type="button" [disabled]="issue.iid === activeIid()" [attr.aria-current]="issue.iid === activeIid() ? 'true' : null" (click)="pick.emit(issue.iid)">
+        <span>#{{ issue.iid }} {{ issue.title }}</span>
+        @if (issue.iid === activeIid()) {
+          <span class="active-badge" data-testid="active-badge">Aktiv</span>
+        }
+      </button>
+    </li>
+  } @empty {
+    <li class="muted">Keine offenen Issues gefunden.</li>
+  }
+</ul>
+@if (hasMore()) {
+  <button type="button" (click)="loadMore.emit()">Weitere laden</button>
+}
